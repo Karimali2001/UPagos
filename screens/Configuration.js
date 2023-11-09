@@ -1,3 +1,5 @@
+//page where you put your bank account information
+//for payment verification
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 

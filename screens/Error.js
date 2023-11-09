@@ -1,0 +1,1 @@
+//pagina donde se muestra un error dado

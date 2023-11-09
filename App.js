@@ -5,8 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Import your screens
 import Configuration from './screens/Configuration';
-import Register from './screens/Register';
-import Queries from './screens/Queries';
+import RegisterNavigator from './screens/RegisterNavigator';
+import QueryNavigator from './screens/QueryNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,9 +21,9 @@ function App() {
 
             if (route.name === 'Configuration') {
               iconName = focused ? 'settings' : 'settings-outline';
-            } else if (route.name === 'Queries') {
+            } else if (route.name === 'QueryNavigator') {
               iconName = focused ? 'md-search' : 'md-search';
-            } else if (route.name === 'Register') {
+            } else if (route.name === 'RegisterNavigator') {
               iconName = focused ? 'camera' : 'camera-outline';
             }
 
@@ -40,8 +40,8 @@ function App() {
         })}
       >
         <Tab.Screen name="Configuration" component={Configuration} />
-        <Tab.Screen name="Queries" component={Queries} />
-        <Tab.Screen name="Register" component={Register} />
+        <Tab.Screen name="QueryNavigator" component={QueryNavigator} />
+        <Tab.Screen name="RegisterNavigator" component={RegisterNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );

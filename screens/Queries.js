@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
+import { useNavigation } from '@react-navigation/native';
 
 const Queries = () => {
+  const navigation = useNavigation();
+
   const [date, setDate] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
 
@@ -13,9 +16,7 @@ const Queries = () => {
   };
 
   const handleButtonClick = () => {
-    // Perform the action on button press
-    // For example, you might want to submit the selected date
-    console.log('Selected Date:', date);
+    navigation.navigate('Payments'); // Navigate to Payments, passing the selected date
   };
 
   return (
@@ -29,7 +30,12 @@ const Queries = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Ingresa la fecha" value={date} />
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresa la fecha"
+          value={date}
+          required
+        />
         <TouchableOpacity
           style={styles.calendarButton}
           onPress={() => setShowCalendar(true)}
@@ -48,7 +54,7 @@ const Queries = () => {
       </Modal>
 
       <TouchableOpacity style={styles.submitButton} onPress={handleButtonClick}>
-        <Text style={styles.buttonText}>Submit</Text>
+        <Text style={styles.buttonText}>Consultar</Text>
       </TouchableOpacity>
     </View>
   );
