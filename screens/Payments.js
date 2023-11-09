@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Date } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import moment from 'moment';
 
-const Payments = () => {
+
+const Payments = ({route}) => {
+  const data = route.params.data;
+  let selectedDate = moment(data);
+  selectedDate = selectedDate.format('DD/MM/YYYY');
   const navigation = useNavigation();
-  let selectedDate = "15-10-2023"
+
 
   const samplePayments = [
     { id: 1, amount: 100, description: 'Payment for item A' },

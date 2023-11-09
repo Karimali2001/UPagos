@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +16,9 @@ const Queries = () => {
   };
 
   const handleButtonClick = () => {
-    navigation.navigate('Payments'); // Navigate to Payments, passing the selected date
+    navigation.navigate('Payments', {
+      data: date
+    }); // Navigate to Payments, passing the selected date
   };
 
   return (
