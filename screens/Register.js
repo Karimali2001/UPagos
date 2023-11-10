@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
 const Register = () => {
   const [inputType, setInputType] = useState('manual');
+  const navigation = useNavigation();
 
   const handleInputChange = (newInputType) => {
     setInputType(newInputType);
   };
 
   const handleSubmit = () => {
-    // Handle submit action based on the selected input type
     if (inputType === 'manual') {
-      // Handle manual input
+      navigation.navigate('RegisterVerification'); // Navigate to RegisterVerification if manual is selected
     } else if (inputType === 'camera') {
       // Handle camera input
     }
@@ -21,17 +22,25 @@ const Register = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Registro</Text>
+      <Text style={styles.description}>Seleccione un método para registrar el pago</Text>
 
       <Picker
         selectedValue={inputType}
         onValueChange={handleInputChange}
         style={styles.picker}
+        itemStyle={styles.pickerItem}
+        labelStyle={styles.pickerLabel}
       >
-        <Picker.Item label="Entrada manual" value="manual" />
-        <Picker.Item label="Entrada de cámara" value="camera" />
+        <Picker.Item label="Manual" value="manual" />
+        <Picker.Item label="Cámara" value="camera" />
       </Picker>
 
-      <Button title="Registrar" onPress={handleSubmit} style={styles.submitButton} />
+      <TouchableOpacity
+        style={{ ...styles.submitButton, backgroundColor: '#363062' }}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.submitText}>Siguiente</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -39,26 +48,47 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#8280A3',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#F99417',
+    fontSize: 36,
+    fontWeight: '700',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    paddingTop: 0,
+  },
+  description: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginVertical: 10,
+    textAlign: 'center',
+    margin: 5
   },
   picker: {
     width: 200,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#363062',
     padding: 10,
+    backgroundColor: '#C4C3CF',
+    borderRadius: 8,
+  },
+  pickerLabel: {
+    color: '#F99417',
   },
   submitButton: {
-    backgroundColor: '#363062',
-    color: '#fff',
     padding: 10,
     marginTop: 20,
+    borderRadius: 8,
+  },
+  submitText: {
+    color: '#fff',
+    padding: 10,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
@@ -16,13 +16,9 @@ const Queries = () => {
   };
 
   const handleButtonClick = () => {
-    if (!date) {
-      alert('Por favor selecciona una fecha'); // Alert the user to choose a date if the input is empty
-    } else {
-      navigation.navigate('Payments', {
-        data: date
-      }); // Navigate to Payments, passing the selected date
-    }
+    navigation.navigate('Payments', {
+      data: date
+    }); // Navigate to Payments, passing the selected date
   };
 
   return (
@@ -40,7 +36,7 @@ const Queries = () => {
           style={styles.input}
           placeholder="Ingresa la fecha"
           value={date}
-          editable={false} // Disable user input
+          required
         />
         <TouchableOpacity
           style={styles.calendarButton}
