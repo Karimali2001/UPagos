@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 const Payments = ({ route, navigation }) => {
   const data = route.params.data;
@@ -32,6 +33,25 @@ const Payments = ({ route, navigation }) => {
     fetchPayments();
   }, [selectedDate]);
 
+  const deletePayment = async (index) => {
+    try {
+      const updatedPayments = [...payments];
+      const deletedPayment = updatedPayments.splice(index, 1)[0];
+
+      // Save the updated payments to AsyncStorage
+      await AsyncStorage.setItem('payments', JSON.stringify(updatedPayments));
+
+      setPayments(updatedPayments);
+
+      Alert.alert(
+        'Pago eliminado',
+        `Se ha eliminado el pago con referencia ${deletedPayment.referencia}`,
+      );
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+    }
+  };
+
   const renderRow = ({ item, index }) => {
     const rowStyle = index % 2 === 0 ? styles.rowEven : styles.rowOdd;
     return (
@@ -39,7 +59,29 @@ const Payments = ({ route, navigation }) => {
         <Text style={styles.rowData}>{item.referencia}</Text>
         <Text style={styles.rowData}>{item.telefono}</Text>
         <Text style={styles.rowData}>{item.monto}</Text>
+        <TouchableOpacity onPress={() => showDeleteConfirmation(index)}>
+          <Ionicons name="trash-outline" size={24} color="red" />
+        </TouchableOpacity>
       </View>
+    );
+  };
+
+  const showDeleteConfirmation = (index) => {
+    Alert.alert(
+      'Eliminar pago',
+      '¿Estás seguro de que deseas eliminar este pago?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: () => deletePayment(index),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
     );
   };
 
@@ -141,6 +183,9 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  trashIcon: {
+    marginLeft: 10,
   },
 });
 
