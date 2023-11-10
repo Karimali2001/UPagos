@@ -19,11 +19,11 @@ function App() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
-            if (route.name === 'Configuration') {
+            if (route.name === 'Configuración') {
               iconName = focused ? 'settings' : 'settings-outline';
-            } else if (route.name === 'QueryNavigator') {
+            } else if (route.name === 'Consultar Pago') {
               iconName = focused ? 'md-search' : 'md-search';
-            } else if (route.name === 'RegisterNavigator') {
+            } else if (route.name === 'Registrar Pago') {
               iconName = focused ? 'camera' : 'camera-outline';
             }
 
@@ -39,9 +39,9 @@ function App() {
           },
         })}
       >
-        <Tab.Screen name="Configuration" component={Configuration} />
-        <Tab.Screen name="QueryNavigator" component={QueryNavigator} />
-        <Tab.Screen name="RegisterNavigator" component={RegisterNavigator} />
+        <Tab.Screen name="Configuración" component={Configuration} />
+        <Tab.Screen name="Consultar Pago" component={QueryNavigator} />
+        <Tab.Screen name="Registrar Pago" component={RegisterNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );
