@@ -1,9 +1,46 @@
-//page where you put your bank account information
-//for payment verification
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Configuration = () => {
+  // State to manage input values
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [cedula, setCedula] = useState('');
+  const [bankName, setBankName] = useState('');
+
+  useEffect(() => {
+    // Load saved data when the component mounts
+    loadSavedData();
+  }, []);
+
+  const loadSavedData = async () => {
+    try {
+      // Load data from AsyncStorage
+      const savedPhoneNumber = await AsyncStorage.getItem('phoneNumber');
+      const savedCedula = await AsyncStorage.getItem('cedula');
+      const savedBankName = await AsyncStorage.getItem('bankName');
+
+      // Update state with saved data
+      if (savedPhoneNumber) setPhoneNumber(savedPhoneNumber);
+      if (savedCedula) setCedula(savedCedula);
+      if (savedBankName) setBankName(savedBankName);
+    } catch (error) {
+      console.error('Error loading data from AsyncStorage:', error);
+    }
+  };
+
+  const saveData = async () => {
+    try {
+      // Save data to AsyncStorage
+      await AsyncStorage.setItem('phoneNumber', phoneNumber);
+      await AsyncStorage.setItem('cedula', cedula);
+      await AsyncStorage.setItem('bankName', bankName);
+      console.log('Data saved successfully!');
+    } catch (error) {
+      console.error('Error saving data to AsyncStorage:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.pageTitle}>
@@ -12,25 +49,40 @@ const Configuration = () => {
         Pago Móvil
       </Text>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Ingresa el número de telefono" />
-        <TextInput style={styles.input} placeholder="Ingresa el número de cédula" />
-        <TextInput style={styles.input} placeholder="Ingresa el nombre del banco" />
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresa el número de telefono"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresa el número de cédula"
+          value={cedula}
+          onChangeText={setCedula}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresa el nombre del banco"
+          value={bankName}
+          onChangeText={setBankName}
+        />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={saveData}>
           <Text style={styles.buttonText}>Guardar</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+    backgroundColor: '#8280A3',
   },
   pageTitle: {
     color: '#F99417',

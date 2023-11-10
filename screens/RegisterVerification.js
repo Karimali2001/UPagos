@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterVerification = () => {
   const navigation = useNavigation();
@@ -31,10 +32,31 @@ const RegisterVerification = () => {
     navigation.goBack();
   };
 
-  const submitPayment = () => {
-    // Logic to handle payment submission
-    // You can add your payment submission code here
-    navigation.navigate('Success');
+  const submitPayment = async () => {
+    // Save payment details to AsyncStorage
+    const paymentDetails = {
+      date,
+      referencia: referenciaValue,
+      telefono: telefonoValue,
+      monto: montoValue,
+    };
+
+    try {
+      // Fetch existing payments from AsyncStorage
+      const existingPaymentsJSON = await AsyncStorage.getItem('payments');
+      const existingPayments = existingPaymentsJSON ? JSON.parse(existingPaymentsJSON) : [];
+
+      // Add the new payment to the list
+      existingPayments.push(paymentDetails);
+
+      // Save the updated list back to AsyncStorage
+      await AsyncStorage.setItem('payments', JSON.stringify(existingPayments));
+
+      // Navigate to the success screen
+      navigation.navigate('Success');
+    } catch (error) {
+      console.error('Error saving payment to AsyncStorage:', error);
+    }
   };
 
   return (
