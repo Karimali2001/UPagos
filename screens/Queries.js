@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
@@ -9,16 +9,25 @@ const Queries = () => {
 
   const [date, setDate] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleDateSelect = selectedDate => {
-    setDate(selectedDate);
-    setShowCalendar(false); // Close the calendar after selecting a date
+    setDate(selectedDate.dateString);
+    setShowCalendar(false);
   };
 
   const handleButtonClick = () => {
-    navigation.navigate('Payments', {
-      data: date
-    }); // Navigate to Payments, passing the selected date
+    if (date) {
+      navigation.navigate('Payments', {
+        data: date,
+      });
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -32,16 +41,11 @@ const Queries = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Ingresa la fecha"
-          value={date}
-          required
-        />
         <TouchableOpacity
-          style={styles.calendarButton}
+          style={styles.dateInput}
           onPress={() => setShowCalendar(true)}
         >
+          <Text>{date || 'Ingrese la fecha'}</Text>
           <Ionicons name="calendar" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -49,9 +53,20 @@ const Queries = () => {
       <Modal visible={showCalendar} animationType="slide">
         <View style={styles.modalContainer}>
           <Calendar
-            onDayPress={day => handleDateSelect(day.dateString)}
+            onDayPress={handleDateSelect}
             markedDates={{ [date]: { selected: true } }}
           />
+        </View>
+      </Modal>
+
+      <Modal visible={showModal} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Por favor, ingrese la fecha antes de consultar.</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={closeModal}>
+              <Text style={styles.buttonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
@@ -75,7 +90,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 10,
@@ -83,14 +97,15 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: 10,
     marginTop: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-  input: {
+  dateInput: {
     flex: 1,
-    height: '100%',
-  },
-  calendarButton: {
-    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   pageTitle: {
     color: '#F99417',
@@ -104,15 +119,37 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButton: {
-    backgroundColor: '#F99417', // Orange background color
+    backgroundColor: '#F99417',
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white', // White text color
+    color: 'white',
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#F99417',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
 

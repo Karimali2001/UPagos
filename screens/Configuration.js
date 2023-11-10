@@ -7,7 +7,8 @@ const Configuration = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.pageTitle}>
-        Datos del {'\n'}
+        Ingresa tus {'\n'}
+        Datos de {'\n'}
         Pago Móvil
       </Text>
       <View style={styles.inputContainer}>

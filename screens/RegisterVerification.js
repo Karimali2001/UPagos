@@ -6,12 +6,15 @@ import { useNavigation } from '@react-navigation/native';
 
 const RegisterVerification = () => {
   const navigation = useNavigation();
-  const [date, setDate] = useState(''); // State for the selected date
+  const [date, setDate] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
 
-  // Function to set today's date as default when the component mounts
+  const [referenciaValue, setReferenciaValue] = useState('');
+  const [telefonoValue, setTelefonoValue] = useState('');
+  const [montoValue, setMontoValue] = useState('');
+
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date
+    const today = new Date().toISOString().split('T')[0];
     setDate(today);
   }, []);
 
@@ -21,11 +24,11 @@ const RegisterVerification = () => {
 
   const handleDateSelect = selectedDate => {
     setDate(selectedDate);
-    setShowCalendar(false); // Close the calendar after selecting a date
+    setShowCalendar(false);
   };
 
   const goBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const submitPayment = () => {
@@ -44,28 +47,41 @@ const RegisterVerification = () => {
           placeholder="Fecha de Pago"
           value={date}
           onChangeText={handleInputChange}
-          onTouchStart={() => setShowCalendar(true)} // Show calendar on touch
+          onTouchStart={() => setShowCalendar(true)}
         />
         <TouchableOpacity onPress={() => setShowCalendar(true)} style={{ alignItems: 'center' }}>
           <Ionicons name="calendar" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
-
-
       <View style={styles.tableContainer}>
         <Text style={styles.tableTitle}>Detalles de Pago</Text>
         <View style={styles.tableRow}>
           <Text style={styles.tableLeftTitle}>Referencia:</Text>
-          <Text style={styles.tableRightItem}>[Referencia Value]</Text>
+          <TextInput
+            style={styles.tableRightItem}
+            value={referenciaValue}
+            onChangeText={text => setReferenciaValue(text)}
+            placeholder="Ingrese la referencia"
+          />
         </View>
         <View style={styles.tableRowAlternate}>
           <Text style={styles.tableLeftTitle}>Nro. Teléfono:</Text>
-          <Text style={styles.tableRightItem}>[Nro. Teléfono Value]</Text>
+          <TextInput
+            style={styles.tableRightItem}
+            value={telefonoValue}
+            onChangeText={text => setTelefonoValue(text)}
+            placeholder="Ingrese el nro. de teléfono"
+          />
         </View>
         <View style={styles.tableRow}>
-          <Text style={styles.tableLeftTitle}>Monto:</Text>
-          <Text style={styles.tableRightItem}>[Monto Value]</Text>
+          <Text style={styles.tableLeftTitle}>Monto (Bs):</Text>
+          <TextInput
+            style={styles.tableRightItem}
+            value={montoValue}
+            onChangeText={text => setMontoValue(text)}
+            placeholder="Ingrese el monto"
+          />
         </View>
       </View>
 
@@ -93,14 +109,19 @@ const RegisterVerification = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#8280A3',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     color: '#F99417',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontWeight: '700',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    paddingTop: 0,
     marginBottom: 20,
   },
   inputContainer: {
