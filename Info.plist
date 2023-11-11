@@ -1,0 +1,5 @@
+<key>NSCameraUsageDescription</key>
+<string>App needs permission to access your phone camera.</string><key>NSPhotoLibraryAddUsageDescription</key>
+<string>App store photos in your phone library.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>App store photos in your phone library.</string>

@@ -23,9 +23,12 @@
     "react-native-calendars": "^1.1302.0",
     "react-native-date-picker": "^4.3.3",
     "react-native-datepicker": "^1.7.2",
+    "react-native-image-picker": "^7.0.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-paper": "^5.11.1",
-    "react-native-table-component": "^1.2.2"
+    "react-native-table-component": "^1.2.2",
+    "rn-text-detector": "^0.0.8",
+    "expo-image-picker": "14.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
