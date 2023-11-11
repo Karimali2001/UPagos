@@ -33,6 +33,10 @@ const RegisterVerification = () => {
   };
 
   const submitPayment = async () => {
+
+    if(!date || !referencia || !telefono || !monto){
+      alert("Por favor ingrese todos los campos");
+    }
     // Save payment details to AsyncStorage
     const paymentDetails = {
       date,
