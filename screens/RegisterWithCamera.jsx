@@ -1,237 +1,163 @@
-import { useState } from 'react'
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  WrapLoading,
-  StyleSheet,
-  ToastAndroid
-} from 'react-native'
-// import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
-import RNTextDetector from 'rn-text-detector'
-import * as ImagePicker from 'expo-image-picker'
+// App.js file 
 
-const RegisterWithCamera = () => {
-  const [status, requestPermission] = ImagePicker.useCameraPermissions()
-  const [state, setState] = useState({
-    loading: false,
-    image: null,
-    textRecognition: null,
-    toast: {
-      message: '',
-      isVisible: false
-    }
-  })
+import { StatusBar } from "expo-status-bar"; 
+import { useState } from "react"; 
+import { 
+	Button, 
+	StyleSheet, 
+	Text, 
+	Image, 
+	SafeAreaView, 
+} from "react-native"; 
+import * as ImagePicker from "expo-image-picker"; 
 
-  async function openCamera() {
-    const options = {
-      mediaType: 'photo'
-    }
+export default function RegisterWithCamera() { 
 
-    alert('OpenCamera')
+	// State to hold the selected image 
+	const [image, setImage] = useState(null); 
+	
+	// State to hold extracted text 
+	const [extractedText, setExtractedText] = 
+		useState(""); 
 
-    await launchCamera(options, (response) => {
-      console.log(response)
-    })
-  }
+	// Function to pick an image from the 
+	// device's gallery 
+	const pickImageGallery = async () => { 
+		let result = 
+			await ImagePicker.launchImageLibraryAsync({ 
+				mediaTypes: 
+					ImagePicker.MediaTypeOptions.Images, 
+				allowsEditing: true, 
+				base64: true, 
+				allowsMultipleSelection: false, 
+			}); 
+		if (!result.canceled) { 
+		
+			// Perform OCR on the selected image 
+			performOCR(result.assets[0]); 
+			
+			// Set the selected image in state 
+			setImage(result.assets[0].uri); 
+		} 
+	}; 
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1
-    })
+	// Function to capture an image using the 
+	// device's camera 
+	const pickImageCamera = async () => { 
+		let result = await ImagePicker.launchCameraAsync({ 
+			mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+			allowsEditing: true, 
+			base64: true, 
+			allowsMultipleSelection: false, 
+		}); 
+		if (!result.canceled) { 
+		
+			// Perform OCR on the captured image 
+			// Set the captured image in state 
+			performOCR(result.assets[0]); 
+			setImage(result.assets[0].uri); 
+		} 
+	}; 
 
-    console.log(result)
+	// Function to perform OCR on an image 
+	// and extract text 
+  const performOCR = (file) => { 
+    let myHeaders = new Headers(); 
+    myHeaders.append( 
+        "apikey", 
+        "FEmvQr5uj99ZUvk3essuYb6P5lLLBS20"
+    ); 
+    myHeaders.append( 
+        "Content-Type", 
+        "multipart/form-data"
+    ); 
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri)
-    }
-  }
+    let raw = file; 
+    let requestOptions = { 
+        method: "POST", 
+        redirect: "follow", 
+        headers: myHeaders, 
+        body: raw, 
+    }; 
 
-  async function onImageSelect(media) {
-    if (!media) {
-      setState({ ...state, loading: false })
-      return
-    }
-    if (!!media && media.assets) {
-      const file = media.assets[0].uri
-      const textRecognition = await RNTextDetector.detectFromUri(file)
-      const INFLIGHT_IT = 'Inflight IT'
-      //if match toast will appear
-      const matchText = textRecognition.findIndex((item) =>
-        item.text.match(INFLIGHT_IT)
-      )
-      setState({
-        ...state,
-        textRecognition,
-        image: file,
-        toast: {
-          message: matchText > -1 ? 'Ohhh i love this company!!' : '',
-          isVisible: matchText > -1
-        },
-        loading: false
-      })
-    }
-  }
+    // Send a POST request to the OCR API 
+    fetch( 
+        "https://api.apilayer.com/image_to_text/upload", 
+        requestOptions 
+    ) 
+        .then((response) => response.json()) 
+        .then((result) => { 
+            // Log the extracted text
+            console.log("Extracted Text:", result);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>RN OCR SAMPLE</Text>
-        <View>
-          <TouchableOpacity
-            style={[styles.submitButton]}
-            onPress={() => openCamera()}
-          >
-            <Text style={[styles.buttonText]}>Take Photo</Text>
-          </TouchableOpacity>
-          <View>
-            <TouchableOpacity
-              style={[styles.submitButton]}
-              onPress={() => pickImage()}
-            >
-              <Text style={[styles.buttonText]}>Pick a Photo</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            {/* <WrapLoading loading={state.loading}> */}
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                style={[styles.image, styles.shadow]}
-                source={{ uri: state.image }}
-              />
-            </View>
-            {!!state.textRecognition &&
-              state.textRecognition.map((item, i) => (
-                <Text key={i}>{item.text}</Text>
-              ))}
-            {/* </WrapLoading> */}
-          </View>
-        </View>
-        {state.toast.isVisible &&
-          ToastAndroid.showWithGravityAndOffset(
-            state.toast.message,
-            ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50
-          )}
-      </View>
-    </SafeAreaView>
-  )
-}
+            // Set the extracted text in state 
+            setExtractedText(result["all_text"]); 
+        }) 
+        .catch((error) => console.log("error", error)); 
+};  
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#8280A3',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  title: {
-    color: '#F99417',
-    fontSize: 36,
-    fontWeight: '700',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-    paddingTop: 0,
-    marginBottom: 20
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20, // Margin on the sides
-    marginBottom: 10
-  },
-  dateInput: {
-    flex: 1,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#F5F5F5', // Background color
-    marginRight: 10
-  },
-  tableContainer: {
-    backgroundColor: '#C4C3CF',
-    padding: 10,
-    marginTop: 20,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
-  },
-  tableTitle: {
-    color: 'black',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  tableRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-    backgroundColor: '#F5F5F5',
-    padding: 10,
-    borderRadius: 8,
-    width: '80%' // Set the width to 100%
-  },
-  tableRowAlternate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-    backgroundColor: '#C4C3CF',
-    padding: 10,
-    borderRadius: 8,
-    width: '80%' // Set the width to 100%
-  },
-  tableLeftTitle: {
-    color: 'black',
-    fontWeight: 'bold',
-    flex: 1,
-    paddingRight: 10
-  },
-  tableRightItem: {
-    color: 'black',
-    flex: 2
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff'
-  },
-  submitButton: {
-    backgroundColor: '#F99417',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 20
-  }
-})
+	return ( 
+		<SafeAreaView style={styles.container}> 
+			<Text style={styles.heading2}> 
+				Image to Text App 
+			</Text> 
+			<Button 
+				title="Pick an image from gallery"
+				onPress={pickImageGallery} 
+			/> 
+			<Button 
+				title="Pick an image from camera"
+				onPress={pickImageCamera} 
+			/> 
+			{image && ( 
+				<Image 
+					source={{ uri: image }} 
+					style={{ 
+						width: 400, 
+						height: 300, 
+						objectFit: "contain", 
+					}} 
+				/> 
+			)} 
 
-export default RegisterWithCamera
+			<Text style={styles.text1}> 
+				Extracted text: 
+			</Text> 
+			<Text style={styles.text1}> 
+				{extractedText} 
+			</Text> 
+			<StatusBar style="auto" /> 
+		</SafeAreaView> 
+	); 
+} 
+
+const styles = StyleSheet.create({ 
+	container: { 
+		display: "flex", 
+		alignContent: "center", 
+		alignItems: "center", 
+		justifyContent: "space-evenly", 
+		backgroundColor: "#fff", 
+		height: "100%", 
+	}, 
+	heading: { 
+		fontSize: 28, 
+		fontWeight: "bold", 
+		marginBottom: 10, 
+		color: "green", 
+		textAlign: "center", 
+	}, 
+	heading2: { 
+		fontSize: 22, 
+		fontWeight: "bold", 
+		marginBottom: 10, 
+		color: "black", 
+		textAlign: "center", 
+	}, 
+	text1: { 
+		fontSize: 16, 
+		marginBottom: 10, 
+		color: "black", 
+		fontWeight: "bold", 
+	}, 
+});

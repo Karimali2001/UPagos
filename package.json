@@ -15,7 +15,9 @@
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
+    "axios": "^1.6.1",
     "expo": "~49.0.15",
+    "expo-image-picker": "14.3.2",
     "expo-status-bar": "~1.6.0",
     "moment": "^2.29.4",
     "react": "18.2.0",
@@ -27,8 +29,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-paper": "^5.11.1",
     "react-native-table-component": "^1.2.2",
-    "rn-text-detector": "^0.0.8",
-    "expo-image-picker": "14.3.2"
+    "rn-text-detector": "^0.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
