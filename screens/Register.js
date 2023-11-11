@@ -16,6 +16,7 @@ const Register = () => {
       navigation.navigate('RegisterVerification'); // Navigate to RegisterVerification if manual is selected
     } else if (inputType === 'camera') {
       // Handle camera input
+      navigation.navigate('OCRScreen'); // Navigate to Camera 
     }
   };
 

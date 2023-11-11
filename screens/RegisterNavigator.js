@@ -6,6 +6,7 @@ import Register from './Register';
 import RegisterVerification from './RegisterVerification';
 import Error from './Error';
 import Success from './Success';
+import OCRScreen from './OCRSreen';
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const RegisterNavigator = () => {
         <Stack.Screen name="RegisterVerification" component={RegisterVerification} />
         <Stack.Screen name="Error" component={Error} />
         <Stack.Screen name="Success" component={Success} />
+        <Stack.Screen name="OCRScreen" component={OCRScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
