@@ -1,3 +1,5 @@
+//pagina donde se le dice al usuario que su 
+//pago fue exitosamente registrado
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';

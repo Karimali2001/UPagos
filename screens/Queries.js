@@ -1,3 +1,4 @@
+//pagina donde se ingresa la fecha y se le manda a la pagina de Payments
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'

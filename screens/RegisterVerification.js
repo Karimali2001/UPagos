@@ -1,67 +1,71 @@
+//esta pagina donde se mandan los datos o se registran manualmente
+//para ser guardados en almacenamiento asincrono
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const RegisterVerification = () => {
-  const navigation = useNavigation();
-  const [date, setDate] = useState('');
-  const [showCalendar, setShowCalendar] = useState(false);
-
-  const [referenciaValue, setReferenciaValue] = useState('');
-  const [telefonoValue, setTelefonoValue] = useState('');
-  const [montoValue, setMontoValue] = useState('');
-
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setDate(today);
-  }, []);
-
-  const handleInputChange = value => {
-    setDate(value);
-  };
-
-  const handleDateSelect = selectedDate => {
-    setDate(selectedDate);
-    setShowCalendar(false);
-  };
-
-  const goBack = () => {
-    navigation.goBack();
-  };
-
-  const submitPayment = async () => {
-
-    if(!date || !referencia || !telefono || !monto){
-      alert("Por favor ingrese todos los campos");
-    }
-    // Save payment details to AsyncStorage
-    const paymentDetails = {
-      date,
-      referencia: referenciaValue,
-      telefono: telefonoValue,
-      monto: montoValue,
+ const RegisterVerification = () => {
+    const navigation = useNavigation();
+    const route = useRoute();
+  
+    const [date, setDate] = useState('');
+    const [showCalendar, setShowCalendar] = useState(false);
+  
+    const [referenciaValue, setReferenciaValue] = useState(route.params?.referencia || '');
+    const [telefonoValue, setTelefonoValue] = useState('');
+    const [montoValue, setMontoValue] = useState(route.params?.amount || '');
+  
+    useEffect(() => {
+      const today = new Date().toISOString().split('T')[0];
+      setDate(today);
+    }, []);
+  
+    const handleInputChange = value => {
+      setDate(value);
     };
-
-    try {
-      // Fetch existing payments from AsyncStorage
-      const existingPaymentsJSON = await AsyncStorage.getItem('payments');
-      const existingPayments = existingPaymentsJSON ? JSON.parse(existingPaymentsJSON) : [];
-
-      // Add the new payment to the list
-      existingPayments.push(paymentDetails);
-
-      // Save the updated list back to AsyncStorage
-      await AsyncStorage.setItem('payments', JSON.stringify(existingPayments));
-
-      // Navigate to the success screen
-      navigation.navigate('Success');
-    } catch (error) {
-      console.error('Error saving payment to AsyncStorage:', error);
-    }
-  };
+  
+    const handleDateSelect = selectedDate => {
+      setDate(selectedDate);
+      setShowCalendar(false);
+    };
+  
+    const goBack = () => {
+      navigation.goBack();
+    };
+  
+    const submitPayment = async () => {
+        if (!date || !referenciaValue || !telefonoValue || !montoValue) {
+            alert('Por favor ingrese todos los campos');
+            return;
+          }
+      // Save payment details to AsyncStorage
+      const paymentDetails = {
+        date,
+        referencia: referenciaValue,
+        telefono: telefonoValue,
+        monto: montoValue,
+      };
+  
+      try {
+        // Fetch existing payments from AsyncStorage
+        const existingPaymentsJSON = await AsyncStorage.getItem('payments');
+        const existingPayments = existingPaymentsJSON ? JSON.parse(existingPaymentsJSON) : [];
+  
+        // Add the new payment to the list
+        existingPayments.push(paymentDetails);
+  
+        // Save the updated list back to AsyncStorage
+        await AsyncStorage.setItem('payments', JSON.stringify(existingPayments));
+  
+        // Navigate to the success screen
+        navigation.navigate('Success');
+      } catch (error) {
+        console.error('Error saving payment to AsyncStorage:', error);
+      }
+    };
 
   return (
     <View style={styles.container}>
@@ -240,3 +244,4 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterVerification;
+

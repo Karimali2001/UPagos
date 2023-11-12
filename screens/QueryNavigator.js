@@ -1,3 +1,5 @@
+//navegador para las paginas del proceso de consulta de pagos
+//por fecha
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

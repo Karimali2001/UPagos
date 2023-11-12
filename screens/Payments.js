@@ -1,3 +1,7 @@
+//pagina donde se recibe la fecha dada
+//se sacan los pagos del almacenamiento asincrono 
+//se filtran los pagos por la fecha dada y se muestran
+//los pagos se pueden eliminar si existio algun error 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import moment from 'moment';

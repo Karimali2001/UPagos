@@ -1,3 +1,4 @@
+//pagina donde se decide si registrar manual o por una imagen
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
