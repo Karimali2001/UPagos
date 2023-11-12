@@ -1,28 +1,87 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 const Payments = ({ route, navigation }) => {
   const data = route.params.data;
-  let selectedDate = moment(data);
-  selectedDate = selectedDate.format('DD/MM/YYYY');
+  const selectedDate = moment(data).format('YYYY-MM-DD');
 
-  // Sample payment data for demonstration
-  const payments = [
-    { ref: 'Ref 1', phoneNumber: '123-456-7890', amount: 50 },
-    { ref: 'Ref 2', phoneNumber: '987-654-3210', amount: 75 },
-    { ref: 'Ref 3', phoneNumber: '111-222-3333', amount: 100 },
-    // ... other payment data
-  ];
+  const [payments, setPayments] = useState([]);
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        // Fetch payments from AsyncStorage
+        const paymentsData = await AsyncStorage.getItem('payments');
+        if (paymentsData) {
+          const allPayments = JSON.parse(paymentsData);
+
+          // Filter payments for the selected date
+          const filteredPayments = allPayments.filter(payment =>
+            moment(payment.date).isSame(selectedDate, 'day')
+          );
+
+          setPayments(filteredPayments);
+        }
+      } catch (error) {
+        console.error('Error fetching payments from AsyncStorage:', error);
+      }
+    };
+
+    fetchPayments();
+  }, [selectedDate]);
+
+  const deletePayment = async (index) => {
+    try {
+      const updatedPayments = [...payments];
+      const deletedPayment = updatedPayments.splice(index, 1)[0];
+
+      // Save the updated payments to AsyncStorage
+      await AsyncStorage.setItem('payments', JSON.stringify(updatedPayments));
+
+      setPayments(updatedPayments);
+
+      Alert.alert(
+        'Pago eliminado',
+        `Se ha eliminado el pago con referencia ${deletedPayment.referencia}`,
+      );
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+    }
+  };
 
   const renderRow = ({ item, index }) => {
     const rowStyle = index % 2 === 0 ? styles.rowEven : styles.rowOdd;
     return (
       <View style={[styles.row, rowStyle]}>
-        <Text style={styles.rowData}>{item.ref}</Text>
-        <Text style={styles.rowData}>{item.phoneNumber}</Text>
-        <Text style={styles.rowData}>{item.amount}</Text>
+        <Text style={styles.rowData}>{item.referencia}</Text>
+        <Text style={styles.rowData}>{item.telefono}</Text>
+        <Text style={styles.rowData}>{item.monto}</Text>
+        <TouchableOpacity onPress={() => showDeleteConfirmation(index)}>
+          <Ionicons name="trash-outline" size={24} color="red" />
+        </TouchableOpacity>
       </View>
+    );
+  };
+
+  const showDeleteConfirmation = (index) => {
+    Alert.alert(
+      'Eliminar pago',
+      '¿Estás seguro de que deseas eliminar este pago?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: () => deletePayment(index),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
     );
   };
 
@@ -55,7 +114,7 @@ const Payments = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
     padding: 20,
   },
   title: {
@@ -124,6 +183,9 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  trashIcon: {
+    marginLeft: 10,
   },
 });
 
