@@ -9,34 +9,48 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#363062"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#363062"
       },
-      "package": "com.alejandrojrosas.UPagos"
+      "package": "com.karimali.UPagos",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "ee5e15c7-fba3-4e07-b4a7-65b0573c3c69"
+        "projectId": "9f334026-4f94-41e3-8dbd-9d28e8ad9901"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "updates": {
-      "url": "https://u.expo.dev/ee5e15c7-fba3-4e07-b4a7-65b0573c3c69"
+      "url": "https://u.expo.dev/9f334026-4f94-41e3-8dbd-9d28e8ad9901"
+    },
+    "ios": {
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
+    }
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      }
     }
   }
 }

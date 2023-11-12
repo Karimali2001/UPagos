@@ -1,7 +1,3 @@
-//pagina donde se registra un pago con una foto
-//la foto puede ser tomada por camara o de la galeria
-//se usa una api que pasa la imagen a texto y de ahi se 
-//sacan los valores y se mandan a la pantalla de verificacion
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, SafeAreaView, Modal, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -18,17 +14,21 @@ export default function RegisterWithCamera({ navigation }) {
       base64: true,
       allowsMultipleSelection: false,
     });
+  
     if (!result.canceled) {
       const extractedValues = await performOCR(result.assets[0]);
-      if (valuesAreValid(extractedValues)) {
+  
+      // Display modal for missing value first
+      if (!valuesAreValid(extractedValues)) {
+        setModalVisible(true);
+      } else {
+        // Navigate only if values are valid
         setImage(result.assets[0].uri);
         navigation.navigate('RegisterVerification', extractedValues);
-      } else {
-        setModalVisible(true);
       }
     }
   };
-
+  
   const pickImageCamera = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -36,17 +36,21 @@ export default function RegisterWithCamera({ navigation }) {
       base64: true,
       allowsMultipleSelection: false,
     });
+  
     if (!result.canceled) {
       const extractedValues = await performOCR(result.assets[0]);
-      if (valuesAreValid(extractedValues)) {
+  
+      // Display modal for missing value first
+      if (!valuesAreValid(extractedValues)) {
+        setModalVisible(true);
+      } else {
+        // Navigate only if values are valid
         setImage(result.assets[0].uri);
         navigation.navigate('RegisterVerification', extractedValues);
-      } else {
-        setModalVisible(true);
       }
     }
   };
-
+  
   const performOCR = async (file) => {
     try {
       const myHeaders = new Headers();
@@ -66,40 +70,42 @@ export default function RegisterWithCamera({ navigation }) {
 
       console.log("Extracted Text:", result);
 
-      const match = result["all_text"].match(/(?:referencia|operacion|recibo)\D*(\d+)/i);
+      // Check if 'all_text' is defined before using match
+      if (result["all_text"]) {
+        const match = result["all_text"].match(/(?:referencia|operacion|recibo)\D*(\d+)/i);
 
-      if (match) {
-        console.log(`${match[1].charAt(0).toUpperCase() + match[1].slice(1)}`);
-      } else {
-        console.log("Referencia, Operacion, or Recibo number not found");
-        setMissingValue("Referencia, Operacion, or Recibo");
-        setModalVisible(true);
+        if (match) {
+          console.log(`${match[1].charAt(0).toUpperCase() + match[1].slice(1)}`);
+        } else {
+          console.log("Referencia, Operacion, or Recibo number not found");
+          setMissingValue("Referencia, Operacion, or Recibo");
+          setModalVisible(true);
+        }
+
+        const amountMatch = result["all_text"].match(/(\d+\.\d+)/);
+
+        if (amountMatch) {
+          console.log("Amount with Decimals:", amountMatch[0]);
+        } else {
+          console.log("Amount with decimals not found");
+        }
+
+        const dateMatches = result["all_text"].match(/(\d{2}[-/]\d{2}[-/]\d{4})/);
+
+        if (dateMatches) {
+          console.log("Date Values:", dateMatches[0]);
+        } else {
+          console.log("Date values not found");
+        }
+
+        return {
+          referencia: match ? match[1].charAt(0).toUpperCase() + match[1].slice(1) : null,
+          amount: amountMatch ? amountMatch[0] : null,
+          date: dateMatches ? dateMatches[0] : null,
+        };
       }
-
-      const amountMatch = result["all_text"].match(/(\d+\.\d+)/);
-
-      if (amountMatch) {
-        console.log("Amount with Decimals:", amountMatch[0]);
-      } else {
-        console.log("Amount with decimals not found");
-      }
-
-      const dateMatches = result["all_text"].match(/(\d{2}[-/]\d{2}[-/]\d{4})/);
-
-      if (dateMatches) {
-        console.log("Date Values:", dateMatches[0]);
-      } else {
-        console.log("Date values not found");
-      }
-
-      return {
-        referencia: match ? match[1].charAt(0).toUpperCase() + match[1].slice(1) : null,
-        amount: amountMatch ? amountMatch[0] : null,
-        date: dateMatches ? dateMatches[0] : null,
-      };
     } catch (error) {
       console.error("Error in performOCR:", error);
-      setMissingValue("Referencia, Operacion, or Recibo");
       setModalVisible(true);
       return {};
     }
@@ -107,9 +113,10 @@ export default function RegisterWithCamera({ navigation }) {
 
   const valuesAreValid = (extractedValues) => {
     return (
-      extractedValues.referencia !== null &&
-      extractedValues.amount !== null &&
-      extractedValues.date !== null
+      extractedValues &&
+      extractedValues.referencia !== undefined &&
+      extractedValues.amount !== undefined &&
+      extractedValues.date !== undefined
     );
   };
 
