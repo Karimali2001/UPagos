@@ -15,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker'
 
 const RegisterWithCamera = () => {
   const [status, requestPermission] = ImagePicker.useCameraPermissions()
+  // const [image, setImage] = useState()
   const [state, setState] = useState({
     loading: false,
     image: null,
@@ -25,29 +26,34 @@ const RegisterWithCamera = () => {
     }
   })
 
-  async function openCamera() {
-    const options = {
-      mediaType: 'photo'
+  const uploadImage = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync()
+      let result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.back,
+        allowsEditing: false,
+        aspect: [1, 1],
+        quality: 1
+      })
+
+      console.log(result)
+      onImageSelect(result)
+    } catch (error) {
+      console.log(error)
+      alert('Error uploading image: ' + error.message)
     }
-
-    alert('OpenCamera')
-
-    await launchCamera(options, (response) => {
-      console.log(response)
-    })
   }
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
       quality: 1
     })
 
     console.log(result)
-
+    onImageSelect(result)
     if (!result.canceled) {
       setImage(result.assets[0].uri)
     }
@@ -66,6 +72,8 @@ const RegisterWithCamera = () => {
       const matchText = textRecognition.findIndex((item) =>
         item.text.match(INFLIGHT_IT)
       )
+      console.log(textRecognition)
+      console.log(matchText)
       setState({
         ...state,
         textRecognition,
@@ -86,7 +94,7 @@ const RegisterWithCamera = () => {
         <View>
           <TouchableOpacity
             style={[styles.submitButton]}
-            onPress={() => openCamera()}
+            onPress={() => uploadImage()}
           >
             <Text style={[styles.buttonText]}>Take Photo</Text>
           </TouchableOpacity>
