@@ -30,7 +30,8 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-paper": "^5.11.1",
     "react-native-table-component": "^1.2.2",
-    "rn-text-detector": "^0.0.8"
+    "rn-text-detector": "^0.0.8",
+    "expo-updates": "~0.18.17"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
