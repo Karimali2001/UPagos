@@ -1,3 +1,4 @@
+
 {
   "expo": {
     "name": "UPagos",
@@ -14,43 +15,24 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "ios": {
+      "supportsTablet": true
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#363062"
       },
-      "package": "com.karimali.UPagos",
-      "runtimeVersion": "1.0.0"
+      "package": "com.karimali.UPagos"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "9f334026-4f94-41e3-8dbd-9d28e8ad9901"
-      }
-    },
-    "updates": {
-      "url": "https://u.expo.dev/9f334026-4f94-41e3-8dbd-9d28e8ad9901"
-    },
-    "ios": {
-      "runtimeVersion": {
-        "policy": "appVersion"
-      }
-    }
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {
-      "android": {
-        "buildType": "apk"
+        "projectId": "fc81181f-f8bf-453c-bbff-4b5d86cb4bfa"
       }
     }
   }
 }
+
